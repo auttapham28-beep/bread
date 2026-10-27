@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>เมนูร้าน ขนมปังระเบิด (Boom Toast)</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+    }
+    .badge-glow {
+      box-shadow: 0 0 15px rgba(249, 115, 22, 0.4);
+    }
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      body {
+        background: white !important;
+        color: black !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-amber-50 via-orange-50 to-red-50 min-h-screen text-slate-800 antialiased p-3 md:p-8">
+
+  <div class="max-w-6xl mx-auto">
+    <!-- Header / Branding -->
+    <header class="bg-gradient-to-r from-amber-500 via-orange-500 to-red-600 text-white rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden mb-8 border-4 border-amber-300">
+      <div class="absolute -right-10 -bottom-10 opacity-15 pointer-events-none text-9xl">🍞💥</div>
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+        <div class="text-center md:text-left">
+          <div class="inline-flex items-center gap-2 bg-yellow-400 text-orange-950 font-bold text-xs md:text-sm px-3 py-1 rounded-full uppercase tracking-wider mb-2 shadow">
+            🔥 สูตรเด็ดเนยสดแท้ • ไส้ทะลักทุกคำ 🔥
+          </div>
+          <h1 class="text-4xl md:text-5xl font-extrabold tracking-tight flex items-center justify-center md:justify-start gap-3">
+            <span>ร้านขนมปังระเบิด</span>
+            <span class="text-3xl md:text-4xl">💥🍞</span>
+          </h1>
+          <p class="text-amber-100 text-base md:text-lg mt-1 font-medium">
+            "กรอบนอก นุ่มฉ่ำเนย กัดทีเดียว... ไส้ระเบิดทะลักเต็มปาก!"
+          </p>
+          <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 mt-3 text-xs md:text-sm text-amber-50">
+            <span>📍 ปิ้งเตาถ่านหอมกรุ่น</span>
+            <span>•</span>
+            <span>🧈 เนยแท้ 100% ไม่ผสมมาการีน</span>
+            <span>•</span>
+            <span>🍯 ปรับระดับความหวานได้</span>
+          </div>
+        </div>
+
+        <div class="flex gap-2 no-print">
+          <button onclick="window.print()" class="bg-white/20 hover:bg-white/30 text-white border border-white/40 px-4 py-2.5 rounded-xl font-medium text-sm flex items-center gap-2 backdrop-blur-sm transition-all shadow-sm">
+            🖨️ พิมพ์เมนู
+          </button>
+          <button onclick="scrollToCart()" class="bg-yellow-400 hover:bg-yellow-300 text-orange-950 font-bold px-5 py-2.5 rounded-xl text-sm flex items-center gap-2 shadow-lg transition-transform active:scale-95">
+            🛒 ดูออเดอร์ (<span id="cart-count">0</span>)
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Layout -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Menu Catalog (2 Cols on Large) -->
+      <div class="lg:col-span-2 space-y-6">
+        
+        <!-- Category Filter Pills -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none no-print">
+          <button onclick="filterCategory('all')" class="cat-btn active bg-orange-600 text-white px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap shadow-sm transition">
+            🌟 ทั้งหมด
+          </button>
+          <button onclick="filterCategory('sweet')" class="cat-btn bg-white hover:bg-orange-100 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap shadow-sm transition">
+            🍫 ไส้หวานระเบิด
+          </button>
+          <button onclick="filterCategory('savory')" class="cat-btn bg-white hover:bg-orange-100 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap shadow-sm transition">
+            🧀 ไส้คาวชีสยืด
+          </button>
+          <button onclick="filterCategory('classic')" class="cat-btn bg-white hover:bg-orange-100 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap shadow-sm transition">
+            🧈 ปังปิ้งคลาสสิก
+          </button>
+          <button onclick="filterCategory('ice')" class="cat-btn bg-white hover:bg-orange-100 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap shadow-sm transition">
+            🍧 ปังเย็นภูเขาไฟ
+          </button>
+          <button onclick="filterCategory('drinks')" class="cat-btn bg-white hover:bg-orange-100 text-slate-700 px-4 py-2 rounded-xl text-sm font-semibold whitespace-nowrap shadow-sm transition">
+            🧋 เครื่องดื่ม
+          </button>
+        </div>
+
+        <!-- Menu Grid -->
+        <div id="menu-items" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Items will be populated by JS -->
+        </div>
+
+        <!-- Extra Toppings Card -->
+        <div class="bg-amber-100/70 border border-amber-300 rounded-2xl p-5 shadow-sm">
+          <h3 class="font-bold text-orange-950 text-base flex items-center gap-2 mb-3">
+            <span>✨ ท็อปปิ้งเพิ่มความฟิน (+10 ถึง +25 บาท)</span>
+          </h3>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs md:text-sm">
+            <div class="bg-white/80 p-2.5 rounded-lg border border-amber-200">
+              <span class="font-semibold block text-slate-800">🍨 ไอศกรีมวานิลลา</span>
+              <span class="text-orange-600 font-bold">+20.-</span>
+            </div>
+            <div class="bg-white/80 p-2.5 rounded-lg border border-amber-200">
+              <span class="font-semibold block text-slate-800">🧀 ชีสมอสซาเรลล่า</span>
+              <span class="text-orange-600 font-bold">+25.-</span>
+            </div>
+            <div class="bg-white/80 p-2.5 rounded-lg border border-amber-200">
+              <span class="font-semibold block text-slate-800">☁️ วิปครีมภูเขาไฟ</span>
+              <span class="text-orange-600 font-bold">+15.-</span>
+            </div>
+            <div class="bg-white/80 p-2.5 rounded-lg border border-amber-200">
+              <span class="font-semibold block text-slate-800">🍪 โอริโอบด / คอร์นเฟลก</span>
+              <span class="text-orange-600 font-bold">+10.-</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Interactive Order Cart & Shop Info -->
+      <div class="space-y-6">
+        
+        <!-- Cart Card -->
+        <div id="cart-section" class="bg-white rounded-3xl p-6 shadow-xl border border-orange-100 sticky top-6">
+          <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+              <span>🛒 ตะกร้าจำลองการสั่ง</span>
+            </h2>
+            <button onclick="clearCart()" class="text-xs text-red-500 hover:text-red-700 font-medium">
+              ล้างทั้งหมด
+            </button>
+          </div>
+
+          <!-- Cart Items List -->
+          <div id="cart-list" class="divide-y divide-slate-100 max-h-64 overflow-y-auto my-3 pr-1">
+            <p class="text-center py-8 text-slate-400 text-sm">ยังไม่มีรายการที่เลือก<br>คลิกปุ่ม <span class="text-orange-500 font-bold">+ สั่ง</span> เพื่อเพิ่มเมนู</p>
+          </div>
+
+          <!-- Total Calculation -->
+          <div class="pt-4 border-t border-slate-100 space-y-2">
+            <div class="flex justify-between text-sm text-slate-500">
+              <span>จำนวนรวม:</span>
+              <span id="total-qty" class="font-semibold text-slate-700">0 ชิ้น/แก้ว</span>
+            </div>
+            <div class="flex justify-between text-lg font-extrabold text-orange-950">
+              <span>ยอดรวมทั้งสิ้น:</span>
+              <span id="total-price" class="text-2xl text-orange-600 font-black">฿0</span>
+            </div>
+          </div>
+
+          <button onclick="checkoutMock()" class="w-full mt-5 bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-orange-500/25 transition active:scale-95 flex items-center justify-center gap-2">
+            <span>✅ ยืนยันคำสั่งซื้อ / ส่งเข้าครัว</span>
+          </button>
+
+          <!-- Sweetness Level Option Notice -->
+          <div class="mt-4 bg-orange-50 rounded-xl p-3 text-xs text-orange-800 border border-orange-200">
+            <span class="font-bold">💡 เลือกระดับความหวานได้:</span><br>
+            หวาน 0% (ไม่หวาน) • หวาน 50% (หวานน้อย) • หวาน 100% (ปกติกลมกล่อม) • หวาน 125% (หวานสะใจ)
+          </div>
+        </div>
+
+        <!-- Special Gimmick / Marketing Card -->
+        <div class="bg-gradient-to-br from-amber-500 to-orange-600 text-white rounded-3xl p-6 shadow-lg">
+          <h3 class="text-lg font-bold mb-2 flex items-center gap-2">
+            <span>💥 กิมมิคเด็ดร้าน "ขนมปังระเบิด"</span>
+          </h3>
+          <ul class="text-xs md:text-sm space-y-2.5 text-amber-50">
+            <li class="flex items-start gap-2">
+              <span class="text-base">🔥</span>
+              <span><strong>เตาถ่านโบราณ:</strong> อบด้วยเนยสด กลิ่นหอมฟุ้งติดจมูก</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-base">💣</span>
+              <span><strong>ไส้บึ้มทะลัก:</strong> บีบไส้สดใหม่ต่อชิ้น เยิ้มฉ่ำทะลักไหล เหมาะถ่ายคลิปอวดโซเชียล</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <span class="text-base">🧀</span>
+              <span><strong>ชีสยืดสุดสาย:</strong> มอสซาเรลล่าเกรดพรีเมียม ยืดสะใจ</span>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-12 text-center text-slate-400 text-xs pb-6">
+      © ร้านขนมปังระเบิด (Boom Toast) — ความอร่อยพร้อมระเบิดความฟินทุกวัน
+    </footer>
+  </div>
+
+  <!-- JavaScript for dynamic menu, filtering, and cart -->
+  <script>
+    const menuData = [
+      // Sweet Bomb
+      {
+        id: 1,
+        category: 'sweet',
+        badge: '👑 ขายดีอันดับ 1',
+        name: 'ปังช็อกโกแลตฟัดจ์ระเบิด',
+        en: 'Chocolate Fudge Lava Bomb',
+        desc: 'ช็อกโกแลตเข้มข้นเกรดเบลเยียม ลาวาไหลเยิ้ม หวานมันกลมกล่อม',
+        price: 35,
+        icon: '🍫'
+      },
+      {
+        id: 2,
+        category: 'sweet',
+        badge: '🔥 ซิกเนเจอร์',
+        name: 'ปังสังขยาใบเตยมะพร้าวอ่อนระเบิด',
+        en: 'Pandan Coconut Cream Bomb',
+        desc: 'คั้นจากใบเตยแท้ 100% หอมละมุน ผสมเนื้อมะพร้าวอ่อนเคี้ยวเพลิน',
+        price: 35,
+        icon: '🥥'
+      },
+      {
+        id: 3,
+        category: 'sweet',
+        badge: '⭐ ยอดนิยม',
+        name: 'ปังชาไทยลาวาคาราเมล',
+        en: 'Thai Tea Caramel Lava Bomb',
+        desc: 'ชาไทยโบราณคัดพิเศษ หอมเข้มทะลัก ราดซอสคาราเมลโฮมเมด',
+        price: 35,
+        icon: '🧋'
+      },
+      {
+        id: 4,
+        category: 'sweet',
+        badge: '✨ ละมุนลิ้น',
+        name: 'ปังนมสดฮอกไกโดเยิ้ม',
+        en: 'Hokkaido Milk Cream Burst',
+        desc: 'ครีมนมสดฮอกไกโดนุ่มละมุน ไม่เลี่ยน หวานกำลังดี ไส้แน่นล้นทะลัก',
+        price: 30,
+        icon: '🥛'
+      },
+      {
+        id: 5,
+        category: 'sweet',
+        badge: '💥 แนะนำต้องลอง',
+        name: 'ปังไข่เค็มลาวาเยิ้มทอง',
+        en: 'Golden Salted Egg Lava Bomb',
+        desc: 'ไข่แดงเค็มแท้บดละเอียด มันนัว หวานเค็มลงตัว กัดแล้วระเบิดเต็มคำ',
+        price: 45,
+        icon: '🍳'
+      },
+      {
+        id: 6,
+        category: 'sweet',
+        badge: '🍠 ใหม่!',
+        name: 'ปังเผือกหอมกะทิสดระเบิด',
+        en: 'Sweet Taro Coconut Bomb',
+        desc: 'เผือกแท้กวนเนียนนุ่ม กลิ่นหอมอบอวลผสมหัวกะทิคั้นสด',
+        price: 35,
+        icon: '🍠'
+      },
+
+      // Savory Bomb
+      {
+        id: 7,
+        category: 'savory',
+        badge: '🧀 ชีสยืดสะใจ',
+        name: 'ปังดับเบิ้ลแฮมชีสลาวา',
+        en: 'Double Ham & Melted Cheese Bomb',
+        desc: 'แฮมหมูพรีเมียม สอดไส้มอสซาเรลล่าชีสสองเท่า กัดปุ๊บชีสยืดระเบิด',
+        price: 49,
+        icon: '🥓'
+      },
+      {
+        id: 8,
+        category: 'savory',
+        badge: '✨ หรูหราสุดคุ้ม',
+        name: 'ปังผักโขมอบชีสทรัฟเฟิล',
+        en: 'Spinach Truffle Cheese Bomb',
+        desc: 'ผักโขมอบชีสเข้มข้น หอมกลิ่นน้ำมันเห็ดทรัฟเฟิลชวนน้ำลายสอ',
+        price: 55,
+        icon: '🍄'
+      },
+      {
+        id: 9,
+        category: 'savory',
+        badge: '🍕 อร่อยเข้มข้น',
+        name: 'ปังพิซซ่าไส้กรอกสโมคกี้',
+        en: 'Smokey Sausage Pizza Bomb',
+        desc: 'ซอสพิซซ่าเข้มข้น ไส้กรอกหมูรมควัน พร้อมมอสซาเรลล่าชีสเยิ้มๆ',
+        price: 45,
+        icon: '🍕'
+      },
+      {
+        id: 10,
+        category: 'savory',
+        badge: '🌶️ เด็ดแซ่บ',
+        name: 'ปังหมูหยองพริกเผาลาวา',
+        en: 'Spicy Chili Paste Pork Floss',
+        desc: 'น้ำพริกเผาสูตรเด็ดเผ็ดหวานกำลังดี หมูหยองกรอบแน่นเต็มก้อน',
+        price: 39,
+        icon: '🌶️'
+      },
+      {
+        id: 11,
+        category: 'savory',
+        badge: '🌽 ขายดี',
+        name: 'ปังคอร์นชีสหวานมัน',
+        en: 'Sweet Corn Cheese Burst',
+        desc: 'ข้าวโพดหวานสีทองคลุกเนยสด อบชีสเยิ้มทะลัก หวานมันลงตัว',
+        price: 42,
+        icon: '🌽'
+      },
+
+      // Classic Crispy
+      {
+        id: 12,
+        category: 'classic',
+        badge: '🧈 คลาสสิก',
+        name: 'ปังเนยนมน้ำตาลคลาสสิก',
+        en: 'Classic Butter Sweet Milk Toast',
+        desc: 'ขนมปังแผ่นหนา ปิ้งกรอบนอกนุ่มใน ชุ่มเนยสดแท้ ราดนมข้นหวานฉ่ำ',
+        price: 25,
+        icon: '🍞'
+      },
+      {
+        id: 13,
+        category: 'classic',
+        badge: '🧄 หอมฟุ้ง',
+        name: 'ปังเนยกระเทียมพาร์สลีย์',
+        en: 'Garlic Herb Butter Toast',
+        desc: 'กระเทียมสดบดผสมเนยและพาร์สลีย์ อบกรอบ กลิ่นหอมยวนใจ',
+        price: 30,
+        icon: '🧄'
+      },
+      {
+        id: 14,
+        category: 'classic',
+        badge: '🍌 ฟินสุดๆ',
+        name: 'ปังนูเทลล่ากล้วยหอมอัลมอนด์',
+        en: 'Nutella Banana Almond Toast',
+        desc: 'นูเทลล่าแท้ทาหนา กล้วยหอมทองสด โรยอัลมอนด์สไลซ์อบกรอบ',
+        price: 49,
+        icon: '🍌'
+      },
+      {
+        id: 15,
+        category: 'classic',
+        badge: '🍓 เปรี้ยวหวาน',
+        name: 'ปังสตรอว์เบอร์รีครีมชีส',
+        en: 'Strawberry Cream Cheese Toast',
+        desc: 'ครีมชีสนำเข้า ท็อปด้วยแยมสตรอว์เบอร์รีลูกโต เปรี้ยวหวานลงตัว',
+        price: 45,
+        icon: '🍓'
+      },
+
+      // Ice / Shaved Ice
+      {
+        id: 16,
+        category: 'ice',
+        badge: '🌋 เมนูไฮไลท์',
+        name: 'ปังเย็นภูเขาไฟโอวัลตินลาวา',
+        en: 'Ovaltine Volcano Shaved Ice',
+        desc: 'เกล็ดน้ำแข็งเนียนละเอียด ขนมปังปิ้งกรุบกรอบ โรยผงโอวัลตินภูเขาไฟและนมข้น',
+        price: 69,
+        icon: '🍧'
+      },
+      {
+        id: 17,
+        category: 'ice',
+        badge: '🍵 เข้มสะใจ',
+        name: 'ปังเย็นชาไทยวิปชีสทะลัก',
+        en: 'Thai Tea Cream Cheese Bingsu',
+        desc: 'น้ำแข็งไสชาไทยเข้มข้น ขนมปังปิ้ง ราดวิปชีสเค็มมันโรยฝอยทอง',
+        price: 79,
+        icon: '🧋'
+      },
+      {
+        id: 18,
+        category: 'ice',
+        badge: '🌸 สีหวานน่ารัก',
+        name: 'ปังเย็นนมชมพูเรนโบว์',
+        en: 'Pink Milk Rainbow Shaved Ice',
+        desc: 'นมชมพูหอมหวานเย็นสดชื่น ขนมปังชุ่มนม ท็อปปิ้งเยลลี่และมาร์ชเมลโลว์',
+        price: 65,
+        icon: '🍧'
+      },
+
+      // Drinks
+      {
+        id: 19,
+        category: 'drinks',
+        badge: '🧊 สดชื่น',
+        name: 'นมสดเย็นระเบิดคาราเมล',
+        en: 'Iced Caramel Milk Bomb',
+        desc: 'นมสดแท้ 100% ไซรัปคาราเมลเบิร์นไฟ หวานหอมกลมกล่อม',
+        price: 35,
+        icon: '🥛'
+      },
+      {
+        id: 20,
+        category: 'drinks',
+        badge: '👑 ขายดี',
+        name: 'ชาไทยโบราณเข้มข้น',
+        en: 'Authentic Thai Iced Tea',
+        desc: 'ชาไทยกลิ่นหอมกรุ่น ชงสดแก้วต่อแก้ว หวานมันกำลังดี',
+        price: 35,
+        icon: '🧋'
+      },
+      {
+        id: 21,
+        category: 'drinks',
+        badge: '🍋 ดับร้อน',
+        name: 'ชามะนาวน้ำผึ้งแท้ระเบิดความสดชื่น',
+        en: 'Honey Lemon Fresh Tea',
+        desc: 'น้ำผึ้งดอกไม้ป่าแท้ ผสมมะนาวสดคั้นสด เปรี้ยวอมหวานตาสว่าง',
+        price: 40,
+        icon: '🍋'
+      },
+      {
+        id: 22,
+        category: 'drinks',
+        badge: '🫧 ซ่าสะใจ',
+        name: 'บลูฮาวายป๊อบปิ้งโซดา',
+        en: 'Blue Hawaii Popping Soda',
+        desc: 'โซดาเย็นซ่า สีฟ้าสดใส พร้อมเม็ดป๊อบแตกในปากเคี้ยวเพลิน',
+        price: 40,
+        icon: '🍹'
+      }
+    ];
+
+    let cart = [];
+    let currentCategory = 'all';
+
+    function renderMenu() {
+      const container = document.getElementById('menu-items');
+      container.innerHTML = '';
+
+      const filtered = currentCategory === 'all' 
+        ? menuData 
+        : menuData.filter(item => item.category === currentCategory);
+
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "bg-white rounded-2xl p-4 shadow-sm hover:shadow-md border border-slate-100 flex flex-col justify-between transition-all duration-200 hover:-translate-y-0.5";
+        card.innerHTML = `
+          <div>
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <span class="text-3xl p-2 bg-amber-50 rounded-xl border border-amber-100">${item.icon}</span>
+              <span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-700 border border-orange-200">
+                ${item.badge}
+              </span>
+            </div>
+            <h4 class="font-bold text-slate-900 text-base leading-snug">${item.name}</h4>
+            <p class="text-xs text-slate-400 font-medium mb-1.5">${item.en}</p>
+            <p class="text-xs text-slate-600 line-clamp-2">${item.desc}</p>
+          </div>
+
+          <div class="flex items-center justify-between pt-4 mt-2 border-t border-slate-50">
+            <div>
+              <span class="text-xs text-slate-400">ราคา</span>
+              <p class="text-lg font-black text-orange-600">฿${item.price}</p>
+            </div>
+            <button onclick="addToCart(${item.id})" class="no-print bg-orange-500 hover:bg-orange-600 active:scale-90 text-white font-bold text-xs px-3.5 py-2 rounded-xl transition shadow shadow-orange-500/20 flex items-center gap-1">
+              <span>+ สั่ง</span>
+            </button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterCategory(cat) {
+      currentCategory = cat;
+      document.querySelectorAll('.cat-btn').forEach(btn => {
+        btn.classList.remove('bg-orange-600', 'text-white');
+        btn.classList.add('bg-white', 'text-slate-700');
+      });
+      event.target.classList.remove('bg-white', 'text-slate-700');
+      event.target.classList.add('bg-orange-600', 'text-white');
+      renderMenu();
+    }
+
+    function addToCart(id) {
+      const item = menuData.find(m => m.id === id);
+      const existing = cart.find(c => c.id === id);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ ...item, qty: 1 });
+      }
+      updateCartUI();
+    }
+
+    function changeQty(id, delta) {
+      const item = cart.find(c => c.id === id);
+      if (item) {
+        item.qty += delta;
+        if (item.qty <= 0) {
+          cart = cart.filter(c => c.id !== id);
+        }
+      }
+      updateCartUI();
+    }
+
+    function clearCart() {
+      cart = [];
+      updateCartUI();
+    }
+
+    function updateCartUI() {
+      const list = document.getElementById('cart-list');
+      const totalQty = document.getElementById('total-qty');
+      const totalPrice = document.getElementById('total-price');
+      const cartCount = document.getElementById('cart-count');
+
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+
+      cartCount.textContent = count;
+      totalQty.textContent = `${count} ชิ้น/แก้ว`;
+      totalPrice.textContent = `฿${total.toLocaleString()}`;
+
+      if (cart.length === 0) {
+        list.innerHTML = `<p class="text-center py-8 text-slate-400 text-sm">ยังไม่มีรายการที่เลือก<br>คลิกปุ่ม <span class="text-orange-500 font-bold">+ สั่ง</span> เพื่อเพิ่มเมนู</p>`;
+        return;
+      }
+
+      list.innerHTML = cart.map(item => `
+        <div class="py-2.5 flex items-center justify-between text-sm gap-2">
+          <div class="flex-1 truncate">
+            <span class="font-bold text-slate-800 block truncate">${item.name}</span>
+            <span class="text-xs text-orange-600 font-semibold">฿${item.price} × ${item.qty} = ฿${item.price * item.qty}</span>
+          </div>
+          <div class="flex items-center gap-1.5 no-print">
+            <button onclick="changeQty(${item.id}, -1)" class="w-6 h-6 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center text-xs">-</button>
+            <span class="w-5 text-center font-bold text-slate-800 text-xs">${item.qty}</span>
+            <button onclick="changeQty(${item.id}, 1)" class="w-6 h-6 rounded-lg bg-orange-100 hover:bg-orange-200 text-orange-700 font-bold flex items-center justify-center text-xs">+</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function scrollToCart() {
+      document.getElementById('cart-section').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function checkoutMock() {
+      if (cart.length === 0) {
+        alert('กรุณาเลือกเมนูอย่างน้อย 1 รายการก่อนส่งออเดอร์ครับ');
+        return;
+      }
+      const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+      alert(`🎉 รับออเดอร์เรียบร้อยแล้ว!\nจำนวนรวม: ${cart.reduce((s,i)=>s+i.qty,0)} รายการ\nยอดรวม: ฿${total}\n\nครัวกำลังเตรียมปิ้งขนมปังระเบิดไส้ทะลักให้คุณ...`);
+      clearCart();
+    }
+
+    // Initialize
+    renderMenu();
+  </script>
+</body>
+</html>
